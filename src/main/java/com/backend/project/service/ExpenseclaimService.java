@@ -37,6 +37,12 @@ public class ExpenseclaimService {
     @Autowired
     private ExpensetypeRepo expensetypeRepo;
 
+    @Autowired
+    private ExpenseclaimMapper expenseclaimMapper;
+
+    @Autowired
+    private ExpenseclaimentryMapper expenseclaimentryMapper;
+
 
     @Transactional
     public ExpenseclaimDTO applyExpense(ExpenseclaimDTO expenseclaimDTO) {
@@ -49,7 +55,7 @@ public class ExpenseclaimService {
         expenseclaimRepo.save(expenseclaimEntity);
 
         // Return the created expense claim DTO without entries
-        return ExpenseclaimMapper.INSTANCE.expenseclaimEntityToExpenseclaimDTO(expenseclaimEntity);
+        return expenseclaimMapper.expenseclaimEntityToExpenseclaimDTO(expenseclaimEntity);
 
     }
 
@@ -61,7 +67,7 @@ public class ExpenseclaimService {
 
         // Save the expense entry and associate it with the expense claim
         entryDTO.setExpenseClaimId(expenseClaimId);
-        ExpenseclaimentryEntity entryEntity = ExpenseclaimentryMapper.INSTANCE.expenseclaimentryDTOToExpeneseclaimentryEntity(entryDTO);
+        ExpenseclaimentryEntity entryEntity = expenseclaimentryMapper.expenseclaimentryDTOToExpeneseclaimentryEntity(entryDTO);
         expenseclaimentryRepo.save(entryEntity);
 
         // Update the total amount in the expense claim
@@ -70,14 +76,14 @@ public class ExpenseclaimService {
         expenseclaimRepo.save(expenseclaimEntity);
 
         // Return the created expense entry DTO
-        return ExpenseclaimentryMapper.INSTANCE.expenseclaimentryEntityToExpenseclaimentryDTO(entryEntity);
+        return expenseclaimentryMapper.expenseclaimentryEntityToExpenseclaimentryDTO(entryEntity);
     }
 
     @Transactional(readOnly = true)
     public List<ExpenseclaimentryDTO> getAllExpenseEntries() {
         List<ExpenseclaimentryEntity> entryEntities = expenseclaimentryRepo.findAll();
         return entryEntities.stream()
-                .map(ExpenseclaimentryMapper.INSTANCE::expenseclaimentryEntityToExpenseclaimentryDTO)
+                .map(expenseclaimentryMapper::expenseclaimentryEntityToExpenseclaimentryDTO)
                 .collect(Collectors.toList());
     }
 
@@ -85,7 +91,7 @@ public class ExpenseclaimService {
     public List<ExpenseclaimDTO> getAllExpenseClaims() {
         List<ExpenseclaimEntity> expenseclaimEntities = expenseclaimRepo.findAll();
         return expenseclaimEntities.stream()
-                .map(ExpenseclaimMapper.INSTANCE::expenseclaimEntityToExpenseclaimDTO)
+                .map(expenseclaimMapper::expenseclaimEntityToExpenseclaimDTO)
                 .collect(Collectors.toList());
     }
 
@@ -107,14 +113,14 @@ public class ExpenseclaimService {
     public ExpenseclaimDTO getExpenseClaimById(Long expenseClaimId) {
         ExpenseclaimEntity expenseClaimEntity = expenseclaimRepo.findById(expenseClaimId).orElse(null);
 
-        return ExpenseclaimMapper.INSTANCE.expenseclaimEntityToExpenseclaimDTO(expenseClaimEntity);
+        return expenseclaimMapper.expenseclaimEntityToExpenseclaimDTO(expenseClaimEntity);
     }
 
     @Transactional(readOnly = true)
     public ExpenseclaimentryDTO getExpenseEntryById(Long expenseEntryId) {
         ExpenseclaimentryEntity expenseEntryEntity = expenseclaimentryRepo.findById(expenseEntryId).orElse(null);
 
-        return ExpenseclaimentryMapper.INSTANCE.expenseclaimentryEntityToExpenseclaimentryDTO(expenseEntryEntity);
+        return expenseclaimentryMapper.expenseclaimentryEntityToExpenseclaimentryDTO(expenseEntryEntity);
     }
 
     @Transactional
