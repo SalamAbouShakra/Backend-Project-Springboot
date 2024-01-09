@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expense-claims")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ExpenseclaimController {
     @Autowired
     private ExpenseclaimService expenseclaimService;

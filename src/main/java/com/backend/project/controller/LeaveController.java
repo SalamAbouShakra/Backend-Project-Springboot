@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/leaves")
+@CrossOrigin(origins = "http://localhost:4200")
 public class LeaveController {
     @Autowired
     private LeaveService leaveService;
@@ -44,13 +45,15 @@ public class LeaveController {
     }
 
     @GetMapping("/leavesByLeaveTypeAndEmployee")
-    public ResponseEntity<Page<LeaveDTO>> getLeavesByLeaveTypeAndEmployee(@RequestBody LeaveTypeEmployeeDTO leaveTypeEmployeeDTO) {
-        Pageable pageable = PageRequest.of(leaveTypeEmployeeDTO.getPage(), leaveTypeEmployeeDTO.getSize());
+    public ResponseEntity<Page<LeaveDTO>> getLeavesByLeaveTypeAndEmployee(
+            @RequestParam Long leaveTypeId,
+            @RequestParam Long employeeId,
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        Page<LeaveDTO> leaves = leaveService.getLeavesByLeaveTypeAndEmployee(
-                leaveTypeEmployeeDTO.getLeaveTypeId(),
-                leaveTypeEmployeeDTO.getEmployeeId(),
-                pageable);
+        Page<LeaveDTO> leaves = leaveService.getLeavesByLeaveTypeAndEmployee(leaveTypeId, employeeId, pageable);
 
         return new ResponseEntity<>(leaves, HttpStatus.OK);
     }
